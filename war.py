@@ -24,6 +24,11 @@ class Deck:
     
     def shuffle_deck(self):
         random.shuffle(self.cards)
+    
+    def deck_split(self):
+        num_of_cards_for_each = len(self.cards) // 2
+        self.list1 = self.cards[:num_of_cards_for_each]
+        self.list2 = self.cards[num_of_cards_for_each:]
 
     def __str__(self):
         return '\n'.join(map(str, self.cards))
