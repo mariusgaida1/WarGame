@@ -40,6 +40,9 @@ class Player:
         self.has_lost = False
 
 class Game:
+    def __init__(self):
+        self.player1 = Player()
+        self.player2 = Player()
     ...
 
 def main():
