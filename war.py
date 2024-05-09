@@ -35,7 +35,9 @@ class Deck:
 
 
 class Player:
-    ...
+    def __init__(self):
+        self.players_deck = []
+        self.has_lost = False
 
 class Game:
     ...
