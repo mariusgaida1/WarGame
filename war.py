@@ -10,6 +10,9 @@ class Card:
     def __str__(self):
         return f"{self.unicode} {self.card} ({self.rank})"
     
+    def __repr__(self):
+        return f"{self.unicode} {self.card} ({self.rank})"
+    
 class Deck:
     def __init__(self, file_csv):
         self.cards = []
@@ -27,12 +30,12 @@ class Deck:
     
     def deck_split(self):
         num_of_cards_for_each = len(self.cards) // 2
-        self.list1 = self.cards[:num_of_cards_for_each]
-        self.list2 = self.cards[num_of_cards_for_each:]
+        player1_deck = self.cards[:num_of_cards_for_each]
+        player2_deck = self.cards[num_of_cards_for_each:]
+        return player1_deck, player2_deck
 
     def __str__(self):
         return '\n'.join(map(str, self.cards))
-
 
 class Player:
     def __init__(self):
@@ -43,11 +46,17 @@ class Game:
     def __init__(self):
         self.player1 = Player()
         self.player2 = Player()
-    ...
-
+    
+    def assign_cards(self, deck):
+        deck1, deck2 = deck.deck_split(self.player1, self.player2)
+        self.player1.players_deck = deck1
+        self.player2.players_deck = deck2 
+    
 def main():
     deck = Deck('cards.csv')
-    print(deck)
+    game = Game()
+    game.assign_cards(deck)
+
 
 
 if __name__ == "__main__":
