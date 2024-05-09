@@ -48,16 +48,25 @@ class Game:
         self.player2 = Player()
     
     def assign_cards(self, deck):
-        deck1, deck2 = deck.deck_split(self.player1, self.player2)
+        deck1, deck2 = deck.deck_split()
         self.player1.players_deck = deck1
-        self.player2.players_deck = deck2 
+        self.player2.players_deck = deck2
+
+    def fight(self):
+        while not self.player1.has_lost and not self.player2.has_lost:
+            if self.player1.players_deck[0][2] == self.player2.players_deck[0][2]:
+                self.war()
+
+    def war(self):
+        pass
     
 def main():
     deck = Deck('cards.csv')
     game = Game()
     game.assign_cards(deck)
-
-
+    start = input("Would you like to start the game? ")
+    if start or start == "":
+        game.fight()
 
 if __name__ == "__main__":
     main()
