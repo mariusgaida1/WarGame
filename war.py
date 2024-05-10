@@ -65,12 +65,13 @@ def main():
     deck = Deck('cards.csv')
     #print(deck)
     game = Game(deck)
-    while not game.player1.has_lost or not game.player2.has_lost:
+    while (not game.player1.has_lost or not game.player2.has_lost) and input("Enter y to play:"):
         if game.game_move() == "play1":
             game.player1.players_deck.append(game.player2.players_deck[0])
             game.player2.players_deck.pop(0)
-            for each in game.player1.players_deck:
-                print(each.card)
+            print(f"{game.player1.players_deck.pop(0).card} vs {game.player2.players_deck.pop(0).card}")
+            #for each in game.player1.players_deck:
+             #   print(each.card)
         print(len(game.player1.players_deck))
         print(len(game.player2.players_deck))
         if len(game.player2.players_deck) == 0:
