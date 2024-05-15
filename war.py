@@ -11,9 +11,6 @@ class Card:
     def __str__(self):
         return f"{self.unicode} {self.card} ({self.rank})"
     
-    def __repr__(self):
-        return f"{self.unicode} {self.card} ({self.rank})"
-    
 class Deck:
     def __init__(self, file_csv):
         self.cards = []
@@ -31,14 +28,13 @@ class Deck:
     
     def deck_split(self):
         num_of_cards_for_each = len(self.cards) // 2
-
         self.list1 = self.cards[:num_of_cards_for_each]
         self.list2 = self.cards[num_of_cards_for_each:]
         return self.list1, self.list2
 
-
     def __str__(self):
         return '\n'.join(map(str, self.cards))
+
 
 class Player:
     def __init__(self):
@@ -49,7 +45,6 @@ class Game:
     def __init__(self, deck):
         self.player1 = Player()
         self.player2 = Player()
-
         self.player1.players_deck, self.player2.players_deck = deck.deck_split()
     
     def game_move(self):
@@ -66,40 +61,33 @@ class Game:
     def __str__(self):
         return f"{self.player1.deck}"
 
-
-    def fight(self):
-        while not self.player1.has_lost and not self.player2.has_lost:
-            if self.player1.players_deck[0][2] == self.player2.players_deck[0][2]:
-                self.war()
-
-    def war(self):
-        pass
-    
 def main():
     deck = Deck('cards.csv')
-
     #print(deck)
     game = Game(deck)
-    while not game.player1.has_lost or not game.player2.has_lost:
+    while (not game.player1.has_lost or not game.player2.has_lost) and input("Enter y to play:") == "y":
         if game.game_move() == "play1":
+            print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+            print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+            game.player1.players_deck.append(game.player1.players_deck[0])
+            game.player1.players_deck.pop(0)
             game.player1.players_deck.append(game.player2.players_deck[0])
             game.player2.players_deck.pop(0)
-            for each in game.player1.players_deck:
-                print(each.card)
-        print(len(game.player1.players_deck))
-        print(len(game.player2.players_deck))
+            
+            #for each in game.player1.players_deck:
+             #   print(each.card)
         if len(game.player2.players_deck) == 0:
             print("The second player has lost!")
             game.player2.has_lost = True
             sys.exit()
         if game.game_move() == "play2":
+            print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+            print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+            game.player2.players_deck.append(game.player2.players_deck[0])
+            game.player2.players_deck.pop(0)
             game.player2.players_deck.append(game.player1.players_deck[0])
             game.player1.players_deck.pop(0)
-            for each in game.player2.players_deck:
-                print(each.card)
-        print("second")
-        print(len(game.player1.players_deck))
-        print(len(game.player2.players_deck))
+        
         if len(game.player1.players_deck) == 0:
             print("The first player has lost!")
             game.player1.has_lost = True
@@ -133,8 +121,6 @@ def main():
                     print("The first player has lost!")
                     game.player1.has_lost = True
                     sys.exit()
-                for each in war_deck:
-                    print(each.card)
 
 
 if __name__ == "__main__":
