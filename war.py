@@ -65,30 +65,36 @@ def main():
     deck = Deck('cards.csv')
     #print(deck)
     game = Game(deck)
-    while not game.player1.has_lost or not game.player2.has_lost:
+    while (not game.player1.has_lost or not game.player2.has_lost) and input("Enter y to play:") == "y":
         if game.game_move() == "play1":
+            print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+            print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+            game.player1.players_deck.append(game.player1.players_deck[0])
+            game.player1.players_deck.pop(0)
             game.player1.players_deck.append(game.player2.players_deck[0])
             game.player2.players_deck.pop(0)
-            for each in game.player1.players_deck:
-                print(each.card)
-        print(len(game.player1.players_deck))
-        print(len(game.player2.players_deck))
+            
+            #for each in game.player1.players_deck:
+             #   print(each.card)
         if len(game.player2.players_deck) == 0:
             print("The second player has lost!")
             game.player2.has_lost = True
             sys.exit()
         if game.game_move() == "play2":
+            print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+            print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+            game.player2.players_deck.append(game.player2.players_deck[0])
+            game.player2.players_deck.pop(0)
             game.player2.players_deck.append(game.player1.players_deck[0])
             game.player1.players_deck.pop(0)
-            for each in game.player2.players_deck:
-                print(each.card)
-        print("second")
-        print(len(game.player1.players_deck))
-        print(len(game.player2.players_deck))
+        
         if len(game.player1.players_deck) == 0:
             print("The first player has lost!")
             game.player1.has_lost = True
             sys.exit()
+        
+        print(len(game.player1.players_deck))
+        print(len(game.player2.players_deck))
 
         if game.game_move() == "war":
                 war_deck = []
@@ -115,8 +121,6 @@ def main():
                     print("The first player has lost!")
                     game.player1.has_lost = True
                     sys.exit()
-                for each in war_deck:
-                    print(each.card)
 
 
 if __name__ == "__main__":
