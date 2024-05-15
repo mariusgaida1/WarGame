@@ -63,65 +63,119 @@ class Game:
 
 def main():
     deck = Deck('cards.csv')
-    #print(deck)
     game = Game(deck)
     while (not game.player1.has_lost or not game.player2.has_lost) and input("Enter y to play:") == "y":
-        if game.game_move() == "play1":
-            print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
-            print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
-            game.player1.players_deck.append(game.player1.players_deck[0])
-            game.player1.players_deck.pop(0)
-            game.player1.players_deck.append(game.player2.players_deck[0])
-            game.player2.players_deck.pop(0)
-            
-            #for each in game.player1.players_deck:
-             #   print(each.card)
-        if len(game.player2.players_deck) == 0:
-            print("The second player has lost!")
-            game.player2.has_lost = True
-            sys.exit()
-        if game.game_move() == "play2":
-            print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
-            print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
-            game.player2.players_deck.append(game.player2.players_deck[0])
-            game.player2.players_deck.pop(0)
-            game.player2.players_deck.append(game.player1.players_deck[0])
-            game.player1.players_deck.pop(0)
-        
-        if len(game.player1.players_deck) == 0:
-            print("The first player has lost!")
-            game.player1.has_lost = True
-            sys.exit()
-        
-        print(len(game.player1.players_deck))
-        print(len(game.player2.players_deck))
+        match game.game_move():
+            case "play1":
+                print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+                print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+                
+                game.player1.players_deck.append(game.player1.players_deck[0])
+                game.player1.players_deck.pop(0)
+                game.player1.players_deck.append(game.player2.players_deck[0])
+                game.player2.players_deck.pop(0)
 
-        if game.game_move() == "war":
-                war_deck = []
-                war_deck.append(game.player1.players_deck[0])
-                war_deck.append(game.player2.players_deck[0])
-                i = 1
-                while game.player1.players_deck[i].rank == game.player2.players_deck[i].rank:
-                    war_deck.append(game.player1.players_deck[i])
-                    war_deck.append(game.player2.players_deck[i])
-                    war_deck.append(game.player1.players_deck[i+1])
-                    war_deck.append(game.player2.players_deck[i+1])
-                    i += 2
-                if game.player1.players_deck[i].rank > game.player2.players_deck[i].rank:
-                    game.player1.players_deck.extend(war_deck)
-                    del game.player2.players_deck[:i]
+                print(f"{len(game.player1.players_deck)}  {len(game.player2.players_deck)}")
+
                 if len(game.player2.players_deck) == 0:
                     print("The second player has lost!")
                     game.player2.has_lost = True
                     sys.exit()
-                if game.player1.players_deck[i].rank < game.player2.players_deck[i].rank:
-                    game.player2.players_deck.extend(war_deck)
-                    del game.player1.players_deck[:i]
+                pass
+
+            case "play2":
+                print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+                print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+                
+                game.player2.players_deck.append(game.player2.players_deck[0])
+                game.player2.players_deck.pop(0)
+                game.player2.players_deck.append(game.player1.players_deck[0])
+                game.player1.players_deck.pop(0)
+
+                print(f"{len(game.player1.players_deck)}  {len(game.player2.players_deck)}")
+        
                 if len(game.player1.players_deck) == 0:
                     print("The first player has lost!")
                     game.player1.has_lost = True
                     sys.exit()
+                
+                pass
+        
+            case "war":
+                war_deck = []
+                
+                print("war")
+                print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+                print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+                print(f"{game.player1.players_deck[1].unicode} vs {game.player2.players_deck[1].unicode}")
 
+                war_deck.append(game.player1.players_deck[0])
+                game.player1.players_deck.pop(0)
+                war_deck.append(game.player2.players_deck[0])
+                game.player2.players_deck.pop(0)
+                
+                
+                i = 2
+                while int(game.player1.players_deck[i].rank) == int(game.player2.players_deck[i].rank):
+                    print(f"{game.player1.players_deck[i].rank} vs {game.player2.players_deck[i].rank}")
+                    print(f"{game.player1.players_deck[i].card} vs {game.player2.players_deck[i].card}")
+                    print(f"{game.player1.players_deck[i-1].unicode} vs {game.player2.players_deck[i-1].unicode}")
+
+
+                    war_deck.append(game.player1.players_deck[i-1])
+                    game.player1.players_deck.pop(i-1)
+                    war_deck.append(game.player2.players_deck[i-1])
+                    game.player2.players_deck.pop(i-1)
+                    war_deck.append(game.player1.players_deck[i])
+                    game.player1.players_deck.pop(i)
+                    war_deck.append(game.player2.players_deck[i])
+                    game.player2.players_deck.pop(i)
+                    
+                    i += 2
+
+                if int(game.player1.players_deck[i].rank) > int(game.player2.players_deck[i].rank):
+                    print(f"{game.player1.players_deck[i].rank} vs {game.player2.players_deck[i].rank}")
+                    print(f"{game.player1.players_deck[i].card} vs {game.player2.players_deck[i].card}")
+                    
+                    war_deck.append(game.player1.players_deck[i-1])
+                    game.player1.players_deck.pop(i-1)
+                    war_deck.append(game.player2.players_deck[i-1])
+                    game.player2.players_deck.pop(i-1)
+                    war_deck.append(game.player1.players_deck[i])
+                    game.player1.players_deck.pop(i)
+                    war_deck.append(game.player2.players_deck[i])
+                    game.player2.players_deck.pop(i)
+                    game.player1.players_deck.extend(war_deck)
+                    
+                    print(f"{len(game.player1.players_deck)}  {len(game.player2.players_deck)}")
+
+                    if len(game.player2.players_deck) == 0:
+                        print("The second player has lost!")
+                        game.player2.has_lost = True
+                        sys.exit()
+                    pass
+                
+                elif int(game.player1.players_deck[i].rank) < int(game.player2.players_deck[i].rank):
+                    print(f"{game.player1.players_deck[i].rank} vs {game.player2.players_deck[i].rank}")
+                    print(f"{game.player1.players_deck[i].card} vs {game.player2.players_deck[i].card}")
+                    
+                    war_deck.append(game.player1.players_deck[i-1])
+                    game.player1.players_deck.pop(i-1)
+                    war_deck.append(game.player2.players_deck[i-1])
+                    game.player2.players_deck.pop(i-1)
+                    war_deck.append(game.player1.players_deck[i])
+                    game.player1.players_deck.pop(i)
+                    war_deck.append(game.player2.players_deck[i])
+                    game.player2.players_deck.pop(i)
+                    game.player2.players_deck.extend(war_deck)
+                    
+                    print(f"{len(game.player1.players_deck)}  {len(game.player2.players_deck)}")
+
+                if len(game.player1.players_deck) == 0:
+                    print("The first player has lost!")
+                    game.player1.has_lost = True
+                    sys.exit()
+                
 
 if __name__ == "__main__":
     main()
