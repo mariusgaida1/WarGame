@@ -1,5 +1,6 @@
 import csv
 import random
+import sys
 
 class Card:
     def __init__(self, unicode, card, rank):
@@ -30,9 +31,11 @@ class Deck:
     
     def deck_split(self):
         num_of_cards_for_each = len(self.cards) // 2
-        player1_deck = self.cards[:num_of_cards_for_each]
-        player2_deck = self.cards[num_of_cards_for_each:]
-        return player1_deck, player2_deck
+
+        self.list1 = self.cards[:num_of_cards_for_each]
+        self.list2 = self.cards[num_of_cards_for_each:]
+        return self.list1, self.list2
+
 
     def __str__(self):
         return '\n'.join(map(str, self.cards))
@@ -43,14 +46,26 @@ class Player:
         self.has_lost = False
 
 class Game:
-    def __init__(self):
+    def __init__(self, deck):
         self.player1 = Player()
         self.player2 = Player()
+
+        self.player1.players_deck, self.player2.players_deck = deck.deck_split()
     
-    def assign_cards(self, deck):
-        deck1, deck2 = deck.deck_split()
-        self.player1.players_deck = deck1
-        self.player2.players_deck = deck2
+    def game_move(self):
+        card1 = int(self.player1.players_deck[0].rank)
+        card2 = int(self.player2.players_deck[0].rank)
+        if card1 > card2:
+            return "play1"
+        elif card1 < card2:
+            return "play2"
+        elif card1 == card2:
+            return "war"
+
+    
+    def __str__(self):
+        return f"{self.player1.deck}"
+
 
     def fight(self):
         while not self.player1.has_lost and not self.player2.has_lost:
@@ -62,11 +77,67 @@ class Game:
     
 def main():
     deck = Deck('cards.csv')
-    game = Game()
-    game.assign_cards(deck)
-    start = input("Would you like to start the game? ")
-    if start or start == "":
-        game.fight()
+
+    #print(deck)
+    game = Game(deck)
+    while (not game.player1.has_lost or not game.player2.has_lost) and input("Enter y to play:") == "y":
+        if game.game_move() == "play1":
+            print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+            print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+            game.player1.players_deck.append(game.player1.players_deck[0])
+            game.player1.players_deck.pop(0)
+            game.player1.players_deck.append(game.player2.players_deck[0])
+            game.player2.players_deck.pop(0)
+            
+            #for each in game.player1.players_deck:
+             #   print(each.card)
+        if len(game.player2.players_deck) == 0:
+            print("The second player has lost!")
+            game.player2.has_lost = True
+            sys.exit()
+        if game.game_move() == "play2":
+            print(f"{game.player1.players_deck[0].rank} vs {game.player2.players_deck[0].rank}")
+            print(f"{game.player1.players_deck[0].card} vs {game.player2.players_deck[0].card}")
+            game.player2.players_deck.append(game.player2.players_deck[0])
+            game.player2.players_deck.pop(0)
+            game.player2.players_deck.append(game.player1.players_deck[0])
+            game.player1.players_deck.pop(0)
+        
+        if len(game.player1.players_deck) == 0:
+            print("The first player has lost!")
+            game.player1.has_lost = True
+            sys.exit()
+        
+        print(len(game.player1.players_deck))
+        print(len(game.player2.players_deck))
+
+        if game.game_move() == "war":
+                war_deck = []
+                war_deck.append(game.player1.players_deck[0])
+                war_deck.append(game.player2.players_deck[0])
+                i = 1
+                while game.player1.players_deck[i].rank == game.player2.players_deck[i].rank:
+                    war_deck.append(game.player1.players_deck[i])
+                    war_deck.append(game.player2.players_deck[i])
+                    war_deck.append(game.player1.players_deck[i+1])
+                    war_deck.append(game.player2.players_deck[i+1])
+                    i += 2
+                if game.player1.players_deck[i].rank > game.player2.players_deck[i].rank:
+                    game.player1.players_deck.extend(war_deck)
+                    del game.player2.players_deck[:i]
+                if len(game.player2.players_deck) == 0:
+                    print("The second player has lost!")
+                    game.player2.has_lost = True
+                    sys.exit()
+                if game.player1.players_deck[i].rank < game.player2.players_deck[i].rank:
+                    game.player2.players_deck.extend(war_deck)
+                    del game.player1.players_deck[:i]
+                if len(game.player1.players_deck) == 0:
+                    print("The first player has lost!")
+                    game.player1.has_lost = True
+                    sys.exit()
+
+
 
 if __name__ == "__main__":
     main()
